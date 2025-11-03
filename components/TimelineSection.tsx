@@ -19,56 +19,56 @@ export function TimelineSection({ events }: TimelineSectionProps) {
   }
 
   return (
-    <section className="relative bg-[#f5ddcb]">
-      {/* Timeline vertical line - sát bên trái */}
-      <div className="absolute left-16 top-0 bottom-0 w-0.5 bg-gray-800" />
-
-      {events.map((event, index) => (
-        <div
-          key={event.slug}
-          className="relative min-h-screen flex items-center py-20"
-        >
-          {/* Year marker - bên trái timeline */}
-          <div className="absolute left-0 w-32 text-right pr-4">
-            <div className="inline-block">
-              <div className="text-4xl font-heading font-bold text-gray-900">
-                {event.yearRange}
+    <section className="relative bg-[#f5ddcb] py-20">
+      <div className="max-w-5xl mx-auto px-8 space-y-32">
+        {events.map((event, index) => (
+          <div
+            key={event.slug}
+            className="relative group"
+          >
+            {/* Card container */}
+            <div className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-xl border-2 border-gray-800/10 p-12 transition-all duration-300 hover:shadow-2xl hover:scale-[1.02]">
+              {/* Event number badge */}
+              <div className="absolute -left-6 -top-6 w-12 h-12 bg-gray-900 text-white rounded-full flex items-center justify-center text-xl font-heading font-bold shadow-lg">
+                {index + 1}
               </div>
-              {/* Dot on timeline */}
-              <div className="absolute right-[-2rem] top-1/2 -translate-y-1/2 w-4 h-4 bg-gray-900 rounded-full border-4 border-[#f5ddcb]" />
+
+              {/* Year with decorative line */}
+              <div className="mb-6">
+                <div className="text-6xl font-heading font-bold text-gray-900 mb-3">
+                  {event.yearRange}
+                </div>
+                <div className="h-1 w-24 bg-gradient-to-r from-gray-900 to-transparent rounded-full" />
+              </div>
+
+              {/* Title - clickable with hover effects */}
+              <h2
+                onClick={() => handleTitleClick(event)}
+                className="timeline-title text-5xl font-heading font-bold text-gray-900 mb-6 cursor-pointer"
+              >
+                {event.title}
+              </h2>
+
+              {/* Summary */}
+              <p className="text-2xl font-body text-gray-700 mb-8 leading-relaxed">
+                {event.summary}
+              </p>
+
+              {/* Content from MDX */}
+              <div className="font-body text-gray-800 text-lg leading-relaxed markdown-content">
+                <ReactMarkdown>{event.content || ''}</ReactMarkdown>
+              </div>
+
+              {/* Bottom decoration */}
+              <div className="mt-8 pt-6 border-t border-gray-300/50">
+                <div className="text-sm text-gray-500 font-body italic">
+                  Giai đoạn {index + 1}/5
+                </div>
+              </div>
             </div>
           </div>
-
-          {/* Content - bên phải timeline */}
-          <div className="ml-32 pl-16 pr-8 max-w-4xl">
-            {/* Title - clickable with hover effects */}
-            <h2
-              onClick={() => handleTitleClick(event)}
-              className="timeline-title text-5xl font-heading font-bold text-gray-900 mb-6 cursor-pointer"
-            >
-              {event.title}
-            </h2>
-
-            {/* Summary */}
-            <p className="timeline-text text-2xl font-body text-gray-700 mb-8 leading-relaxed">
-              {event.summary}
-            </p>
-
-            {/* Content from MDX */}
-            <div className="timeline-text prose prose-lg max-w-none font-body text-gray-800">
-              <ReactMarkdown>{event.content || ''}</ReactMarkdown>
-            </div>
-
-            {/* Video hint */}
-            {event.videoUrl && (
-              <div className="mt-8 inline-flex items-center gap-2 text-gray-600 text-sm font-body">
-                <span className="text-2xl">🎬</span>
-                <span>Nhấp vào tiêu đề để xem video tư liệu</span>
-              </div>
-            )}
-          </div>
-        </div>
-      ))}
+        ))}
+      </div>
 
       {/* Video Modal */}
       {selectedEvent && (
