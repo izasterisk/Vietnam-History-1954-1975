@@ -20,7 +20,7 @@
     "next-seo": "^6.5.0",
     "react": "^18.3.0",
     "react-dom": "^18.3.0",
-    "react-vertical-timeline-component": "^3.6.0",
+    "react-markdown": "^10.1.0",
     "tailwind-merge": "^2.2.0",
     "tailwindcss-animate": "^1.0.7"
   },
