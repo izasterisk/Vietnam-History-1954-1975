@@ -1,7 +1,6 @@
 import type { Config } from "tailwindcss"
 
 const config = {
-  darkMode: ["class"],
   content: [
     './pages/**/*.{ts,tsx}',
     './components/**/*.{ts,tsx}',
@@ -18,6 +17,10 @@ const config = {
       },
     },
     extend: {
+      fontFamily: {
+        heading: ['"Playfair Display"', 'serif'],
+        body: ['Lora', 'serif'],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",

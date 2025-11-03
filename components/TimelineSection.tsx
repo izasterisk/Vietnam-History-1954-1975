@@ -11,15 +11,14 @@ import { Calendar } from 'lucide-react'
 
 interface TimelineSectionProps {
   events: EventData[]
-  locale: string
 }
 
-export function TimelineSection({ events, locale }: TimelineSectionProps) {
+export function TimelineSection({ events }: TimelineSectionProps) {
   return (
     <section id="timeline" className="py-16 bg-background">
       <div className="container">
-        <h2 className="text-4xl font-bold text-center mb-12">
-          {locale === 'vi' ? 'Dòng thời gian' : 'Timeline'}
+        <h2 className="text-4xl font-heading font-bold text-center mb-12">
+          Dòng thời gian
         </h2>
         <VerticalTimeline lineColor="hsl(var(--border))">
           {events.map((event) => (
@@ -41,13 +40,13 @@ export function TimelineSection({ events, locale }: TimelineSectionProps) {
               }}
               icon={<Calendar />}
             >
-              <h3 className="text-xl font-bold mb-2">{event.title}</h3>
+              <h3 className="text-xl font-heading font-bold mb-2">{event.title}</h3>
               {event.city && (
-                <h4 className="text-sm text-muted-foreground mb-2">
+                <h4 className="text-sm font-body text-muted-foreground mb-2">
                   {event.city}
                 </h4>
               )}
-              <p className="text-sm">{event.summary}</p>
+              <p className="text-sm font-body">{event.summary}</p>
             </VerticalTimelineElement>
           ))}
         </VerticalTimeline>

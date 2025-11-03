@@ -4,7 +4,7 @@ import { SITE_CONFIG } from './constants'
 
 export const defaultSEOConfig: DefaultSeoProps = {
   title: SITE_CONFIG.name,
-  description: SITE_CONFIG.description.vi,
+  description: SITE_CONFIG.description,
   openGraph: {
     type: 'website',
     locale: 'vi_VN',

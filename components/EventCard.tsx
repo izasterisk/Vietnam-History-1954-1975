@@ -16,13 +16,13 @@ export function EventCard({ event }: EventCardProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{event.title}</CardTitle>
-        <CardDescription>
+        <CardTitle className="font-heading">{event.title}</CardTitle>
+        <CardDescription className="font-body">
           {event.year} {event.city && `• ${event.city}`}
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <p className="text-sm text-muted-foreground">{event.summary}</p>
+        <p className="text-sm font-body text-muted-foreground">{event.summary}</p>
       </CardContent>
     </Card>
   )
