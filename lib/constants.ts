@@ -16,6 +16,5 @@ export const DEFAULT_COORDS = {
 // Translations
 export const TRANSLATIONS = {
   timeline: 'Dòng thời gian',
-  home: 'Trang chủ',
 }
 
