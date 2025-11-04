@@ -10,6 +10,7 @@ export interface EventData {
   summary: string
   slug: string
   videoUrl?: string
+  audioUrl?: string
   content?: string
 }
 
@@ -44,6 +45,7 @@ export async function getEvents(): Promise<EventData[]> {
       title: data.title || '',
       summary: data.summary || '',
       videoUrl: data.videoUrl || '',
+      audioUrl: data.audioUrl || '',
       content: content || '',
       slug: filename.replace('.mdx', ''),
     } as EventData
