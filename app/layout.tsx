@@ -1,6 +1,7 @@
 // Root layout
 import type { Metadata } from 'next'
 import { Footer } from '@/components/Footer'
+import { LenisProvider } from '@/components/LenisProvider'
 import '@/styles/globals.css'
 
 export const metadata: Metadata = {
@@ -16,10 +17,12 @@ export default function RootLayout({
   return (
     <html lang="vi">
       <body className="font-body">
-        <div className="flex min-h-screen flex-col">
-          <main className="flex-1">{children}</main>
-          <Footer />
-        </div>
+        <LenisProvider>
+          <div className="flex min-h-screen flex-col">
+            <main className="flex-1">{children}</main>
+            <Footer />
+          </div>
+        </LenisProvider>
       </body>
     </html>
   )

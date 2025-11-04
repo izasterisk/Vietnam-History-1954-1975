@@ -54,7 +54,7 @@ export function TimelineNav({ events, currentIndex, onNavigate, unlockedCards }:
   if (!isVisible) return null
 
   return (
-    <div className="fixed bottom-8 left-0 right-0 z-40 flex justify-center animate-fade-in">
+    <div className="fixed bottom-8 left-0 right-0 z-40 flex flex-col items-center animate-fade-in">
       {/* Frosted glass navigation bar */}
       <div className="bg-white/40 backdrop-blur-xl rounded-full shadow-2xl border border-white/60 px-6 py-4 flex items-center gap-6">
         {/* Previous button */}
@@ -143,7 +143,7 @@ export function TimelineNav({ events, currentIndex, onNavigate, unlockedCards }:
       </div>
 
       {/* Progress indicator */}
-      <div className="mt-2 flex justify-center gap-1.5">
+      <div className="mt-2 flex gap-1.5">
         {events.map((_, index) => (
           <div
             key={index}

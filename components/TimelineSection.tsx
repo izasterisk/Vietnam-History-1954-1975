@@ -6,6 +6,7 @@ import { VideoModal } from './VideoModal'
 import { QuizModal } from './QuizModal'
 import { TimelineNav } from './TimelineNav'
 import ReactMarkdown from 'react-markdown'
+import Lenis from 'lenis'
 
 interface TimelineSectionProps {
   events: EventData[]
@@ -95,7 +96,23 @@ export function TimelineSection({ events }: TimelineSectionProps) {
   const handleNavigate = (index: number) => {
     const card = cardRefs.current[index]
     if (card) {
-      card.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      // Get Lenis instance from window
+      const lenis = (window as any).lenis as Lenis | undefined
+      
+      if (lenis) {
+        // Use Lenis scrollTo for smooth scroll
+        const offset = 100
+        const elementPosition = card.getBoundingClientRect().top + window.pageYOffset
+        const offsetPosition = elementPosition - offset
+        
+        lenis.scrollTo(offsetPosition, {
+          duration: 1.5,
+          easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        })
+      } else {
+        // Fallback to regular scrollIntoView
+        card.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      }
     }
   }
 

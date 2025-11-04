@@ -19,6 +19,7 @@ npm run dev  # Đang chạy
 - **MDX** - Quản lý nội dung sự kiện
 - **react-vertical-timeline-component** - Timeline dọc
 - **Lucide React** - Icons (Calendar)
+- **Lenis** - Smooth scroll library (cuộn mượt mà)
 
 ## 🎨 Cấu trúc trang hiện tại
 
