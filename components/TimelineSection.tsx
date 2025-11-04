@@ -224,6 +224,7 @@ export function TimelineSection({ events }: TimelineSectionProps) {
           return (
             <div
               key={event.slug}
+              id={`timeline-${event.yearRange.replace(/\s/g, '-')}`}
               className="relative group"
             >
               {/* Card container with iOS frosted glass effect */}
@@ -347,4 +348,3 @@ export function TimelineSection({ events }: TimelineSectionProps) {
     </section>
   )
 }
-

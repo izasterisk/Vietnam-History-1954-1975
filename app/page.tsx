@@ -2,6 +2,8 @@
 import { TimelineSection } from '@/components/TimelineSection'
 import { HeroSection } from '@/components/HeroSection'
 import { getEvents } from '@/lib/getEvents'
+import VietnamMapWrapper from '@/components/VietnamMapWrapper'
+import { Footer } from '@/components/Footer'
 
 export default async function HomePage() {
   const events = await getEvents()
@@ -32,7 +34,11 @@ export default async function HomePage() {
 
       {/* Timeline Section */}
       <TimelineSection events={events} />
+
+      {/* Vietnam Map Section */}
+      <VietnamMapWrapper />
+
+      {/* Footer */}
     </div>
   )
 }
-

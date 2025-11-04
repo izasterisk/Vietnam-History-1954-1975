@@ -18,8 +18,13 @@ function extractYouTubeId(url: string): string | null {
   return (match1 && match1[1]) || (match2 && match2[1]) || (match3 && match3[1]) || null
 }
 
+function isLocalVideo(url: string): boolean {
+  return url.endsWith('.mp4') || url.endsWith('.webm') || url.endsWith('.ogg')
+}
+
 export function VideoModal({ isOpen, onClose, videoUrl, title }: VideoModalProps) {
   const videoId = extractYouTubeId(videoUrl)
+  const isLocal = isLocalVideo(videoUrl)
 
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
@@ -35,7 +40,8 @@ export function VideoModal({ isOpen, onClose, videoUrl, title }: VideoModalProps
     }
   }, [isOpen, onClose])
 
-  if (!videoId) {
+  // Show error only if it's not a local video AND not a valid YouTube URL
+  if (!videoId && !isLocal) {
     return (
       <AnimatePresence>
         {isOpen && (
@@ -52,7 +58,7 @@ export function VideoModal({ isOpen, onClose, videoUrl, title }: VideoModalProps
               className="bg-white rounded-xl p-6 max-w-md shadow-2xl"
             >
               <p className="text-red-600 font-body text-lg">
-                ⚠️ Link YouTube không hợp lệ
+                ⚠️ Link video không hợp lệ
               </p>
               <button
                 onClick={onClose}
@@ -110,13 +116,24 @@ export function VideoModal({ isOpen, onClose, videoUrl, title }: VideoModalProps
 
               {/* Video embed with loading animation */}
               <div className="relative pb-[56.25%] h-0 bg-black rounded-t-xl overflow-hidden">
-                <iframe
-                  src={`https://www.youtube.com/embed/${videoId}?autoplay=1`}
-                  title={title}
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                  className="absolute top-0 left-0 w-full h-full"
-                />
+                {isLocal ? (
+                  <video
+                    controls
+                    autoPlay
+                    className="absolute top-0 left-0 w-full h-full"
+                    src={videoUrl}
+                  >
+                    Trình duyệt của bạn không hỗ trợ phát video.
+                  </video>
+                ) : (
+                  <iframe
+                    src={`https://www.youtube.com/embed/${videoId}?autoplay=1`}
+                    title={title}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                    className="absolute top-0 left-0 w-full h-full"
+                  />
+                )}
               </div>
 
               {/* Title with gradient background */}
