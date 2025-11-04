@@ -1,9 +1,10 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { EventData } from '@/lib/getEvents'
 import { VideoModal } from './VideoModal'
 import { QuizModal } from './QuizModal'
+import { TimelineNav } from './TimelineNav'
 import ReactMarkdown from 'react-markdown'
 
 interface TimelineSectionProps {
@@ -62,7 +63,41 @@ export function TimelineSection({ events }: TimelineSectionProps) {
   const [currentQuizIndex, setCurrentQuizIndex] = useState<number | null>(null)
   const [unlockedCards, setUnlockedCards] = useState<boolean[]>([true, false, false, false, false])
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
+  const [currentCardIndex, setCurrentCardIndex] = useState(0)
   const cardRefs = useRef<(HTMLDivElement | null)[]>([])
+
+  // Track which card is currently in view
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY + window.innerHeight / 2
+
+      for (let i = cardRefs.current.length - 1; i >= 0; i--) {
+        const card = cardRefs.current[i]
+        if (card) {
+          const rect = card.getBoundingClientRect()
+          const cardTop = window.scrollY + rect.top
+          const cardBottom = cardTop + rect.height
+
+          if (scrollPosition >= cardTop && scrollPosition <= cardBottom) {
+            setCurrentCardIndex(i)
+            break
+          }
+        }
+      }
+    }
+
+    window.addEventListener('scroll', handleScroll)
+    handleScroll() // Check initial state
+
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  const handleNavigate = (index: number) => {
+    const card = cardRefs.current[index]
+    if (card) {
+      card.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    }
+  }
 
   const handleTitleClick = (event: EventData, index: number) => {
     if (unlockedCards[index]) {
@@ -209,6 +244,14 @@ export function TimelineSection({ events }: TimelineSectionProps) {
           eventIndex={currentQuizIndex}
         />
       )}
+
+      {/* Timeline Navigation Bar */}
+      <TimelineNav
+        events={events}
+        currentIndex={currentCardIndex}
+        onNavigate={handleNavigate}
+        unlockedCards={unlockedCards}
+      />
     </section>
   )
 }
