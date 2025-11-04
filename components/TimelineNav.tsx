@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { EventData } from '@/lib/getEvents'
 
 interface TimelineNavProps {
@@ -14,12 +14,20 @@ export function TimelineNav({ events, currentIndex, onNavigate, unlockedCards }:
   const [isVisible, setIsVisible] = useState(false)
 
   useEffect(() => {
+    let ticking = false
+    
     const handleScroll = () => {
-      // Show navigation bar after scrolling past the instruction divider (approximately 800px)
-      setIsVisible(window.scrollY > 800)
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          // Show navigation bar after scrolling past the instruction divider (approximately 800px)
+          setIsVisible(window.scrollY > 800)
+          ticking = false
+        })
+        ticking = true
+      }
     }
 
-    window.addEventListener('scroll', handleScroll)
+    window.addEventListener('scroll', handleScroll, { passive: true })
     handleScroll() // Check initial state
 
     return () => window.removeEventListener('scroll', handleScroll)
@@ -40,16 +48,16 @@ export function TimelineNav({ events, currentIndex, onNavigate, unlockedCards }:
     }
   }
 
-  // Get year ranges for display (previous, current, next)
-  const getDisplayYear = (event: EventData) => {
+  // Get year ranges for display (previous, current, next) - memoized
+  const getDisplayYear = useMemo(() => (event: EventData) => {
     // Extract first year from yearRange
     const match = event.yearRange.match(/^\d{4}/)
     return match ? match[0] : event.year.toString()
-  }
+  }, [])
 
-  const prevEvent = currentIndex > 0 ? events[currentIndex - 1] : null
-  const currentEvent = events[currentIndex]
-  const nextEvent = currentIndex < events.length - 1 ? events[currentIndex + 1] : null
+  const prevEvent = useMemo(() => currentIndex > 0 ? events[currentIndex - 1] : null, [currentIndex, events])
+  const currentEvent = useMemo(() => events[currentIndex], [currentIndex, events])
+  const nextEvent = useMemo(() => currentIndex < events.length - 1 ? events[currentIndex + 1] : null, [currentIndex, events])
 
   if (!isVisible) return null
 

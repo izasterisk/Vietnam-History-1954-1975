@@ -1,436 +1,554 @@
-# Vietnam 1954–1975
+# Vietnam History 1954-1975 Timeline
 
-Website lịch sử Việt Nam với Timeline tương tác.
+Website timeline tương tác về lịch sử Việt Nam với quiz unlock system, smooth scroll, và frosted glass effects.
 
-## 🚀 Chạy ngay
+## 🚀 Quick Start
 
 ```bash
-npm install  # Đã cài rồi
-npm run dev  # Đang chạy
-
-# Mở: http://localhost:3000
+npm install
+npm run dev
+# Mở http://localhost:3000
 ```
 
-## 📦 Tech Stack hiện tại
+## 📦 Tech Stack
 
 - **Next.js 15** (App Router) + TypeScript
-- **Tailwind CSS** + shadcn/ui (Button, Card)
-- **Google Fonts**: Playfair Display (tiêu đề) + Lora (văn bản)
-- **MDX** - Quản lý nội dung sự kiện
-- **react-vertical-timeline-component** - Timeline dọc
-- **Lucide React** - Icons (Calendar)
-- **Lenis** - Smooth scroll library (cuộn mượt mà)
+- **Tailwind CSS** + shadcn/ui
+- **Lenis** - Smooth scroll library
+- **MDX** - Content management
+- **React Markdown** - MDX rendering
+- **Google Fonts**: Playfair Display (headings) + Lora (body)
 
-## 🎨 Cấu trúc trang hiện tại
+## 🎨 Features
 
-### 1. Hero Section (Full screen)
-- Màu nền: `#f5ddcb`
-- Text: "Vietnam 1954–1975" + "Khám phá lịch sử Việt Nam qua dòng thời gian"
-- **10 ảnh** bố trí vòng cung xung quanh text:
-  - **Phía trên** (2 ảnh): Ho_chi_minh_trail.jpg, images2260285_A2__1_.jpg
-  - **Phía dưới** (2 ảnh): Redsvn-Ha-Noi-sau-1954-01.jpg, dai-hoi-iii.jpg
-  - **Bên trái** (3 ảnh): 1968.jpg, 60.jpg, 1972.jpg
-  - **Bên phải** (3 ảnh): 60-2.jpg, 1975.png, 1990.jpg
+### 1. Hero Section
+- Full screen với scroll fade effect
+- 10 ảnh lịch sử bố trí vòng cung
+- Hover effect: scale + rotate về 0°
+- Text không bị fade khi scroll
 
 ### 2. Timeline Section
-- 3 sự kiện: 1954, 1968, 1975
-- Vertical timeline với icons
-- Load từ MDX files
+- **Card Lock System**: Card 2-5 bị khóa, cần trả lời quiz
+- **Frosted Glass Cards**: iOS-style glass morphism
+- **Spotlight Effect**: Đốm sáng theo chuột khi hover locked cards
+- **Quiz Modal**: Trắc nghiệm mở khóa nội dung
+- **Video Modal**: Click tiêu đề xem video YouTube
 
-## ✨ Features đã có
+### 3. Timeline Navigation Bar
+- Fixed bottom navigation với frosted glass
+- Hiển thị 3 mốc thời gian (trước - hiện - sau)
+- Auto tracking: Cập nhật theo card hiện tại
+- Smooth scroll navigation với Lenis
+- Progress indicator dots
+- Disabled arrows khi đã đến đầu/cuối
 
-### Hover Effect (Ảnh ở Hero)
-- Hover vào ảnh → Phóng to 30% (scale 1.3)
-- Xoay về 0° (không nghiêng)
-- Transition mượt 0.5s
-- CSS: `.hero-image:hover` trong `styles/globals.css`
+### 4. Smooth Scroll
+- **Lenis library**: Smooth scroll toàn trang
+- Easing tự nhiên, không teleport
+- Passive event listeners cho performance
 
-### Scroll Fade Effect
-- Scroll xuống → Ảnh mờ dần (opacity giảm)
-- Text "Vietnam 1954-1975" giữ nguyên (không mờ)
-- Logic: `components/HeroSection.tsx` - useEffect track scroll
-- Fade từ 1 → 0 trong khoảng 1 screen height
-
-### Smooth Scroll
-- `scroll-behavior: smooth` trong CSS
-- Scroll mượt mà tự nhiên
-
-## 📁 Cấu trúc Files
+## 📁 Cấu trúc Project
 
 ```
 ├── app/
-│   ├── layout.tsx              # Root layout (không có Header)
-│   └── page.tsx                # Trang chính (import HeroSection + Timeline)
+│   ├── layout.tsx              # Root layout + LenisProvider
+│   └── page.tsx                # Main page
 │
 ├── components/
-│   ├── HeroSection.tsx         # Hero full screen + 10 ảnh + scroll fade
-│   ├── TimelineSection.tsx     # Timeline component
-│   ├── EventCard.tsx           # Card component (chưa dùng)
-│   ├── Footer.tsx              # Footer đơn giản
+│   ├── HeroSection.tsx         # Hero với 10 ảnh + scroll fade
+│   ├── TimelineSection.tsx     # Timeline cards + logic
+│   ├── TimelineNav.tsx         # Fixed bottom navigation
+│   ├── QuizModal.tsx           # Quiz unlock modal
+│   ├── VideoModal.tsx          # YouTube video modal
+│   ├── LenisProvider.tsx       # Lenis smooth scroll wrapper
+│   ├── Footer.tsx              # Footer
 │   └── ui/
-│       ├── button.tsx          # shadcn/ui Button
-│       └── card.tsx            # shadcn/ui Card
+│       ├── button.tsx          # shadcn Button
+│       └── card.tsx            # shadcn Card
 │
-├── content/events/             # ← Thêm sự kiện vào đây
-│   ├── 1954.mdx
-│   ├── 1968.mdx
+├── content/events/             # MDX files
+│   ├── 1954-1960.mdx
+│   ├── 1961-1965.mdx
+│   ├── 1965-1968.mdx
+│   ├── 1969-1973.mdx
 │   └── 1975.mdx
 │
 ├── lib/
-│   ├── constants.ts            # SITE_CONFIG
-│   ├── getEvents.ts            # Load MDX files
-│   ├── seo.config.ts           # SEO config
-│   └── utils.ts                # cn() helper
+│   ├── getEvents.ts            # Load & parse MDX
+│   ├── constants.ts            # Site config
+│   ├── utils.ts                # Helpers
+│   └── seo.config.ts           # SEO
 │
-├── public/images/              # 10 ảnh + .gitkeep
-├── styles/globals.css          # Theme + Fonts + Hover effects
-└── README.md                   # File này
+└── styles/
+    └── globals.css             # Global styles + animations
 ```
 
-## ⚡ Thêm sự kiện mới
+## 🔧 Implementation Details
 
-### 1. Tạo file MDX
+### 1. Lenis Smooth Scroll Setup
 
-```bash
-content/events/1960.mdx
+**File: `components/LenisProvider.tsx`**
+
+```typescript
+'use client'
+import { useEffect, useRef } from 'react'
+import Lenis from 'lenis'
+
+export function LenisProvider({ children }: { children: React.ReactNode }) {
+  const lenisRef = useRef<Lenis | null>(null)
+
+  useEffect(() => {
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      orientation: 'vertical',
+      gestureOrientation: 'vertical',
+      smoothWheel: true,
+      wheelMultiplier: 1,
+      touchMultiplier: 2,
+      infinite: false,
+    })
+
+    lenisRef.current = lenis
+    
+    // Expose to window for other components
+    ;(window as any).lenis = lenis
+
+    function raf(time: number) {
+      lenis.raf(time)
+      requestAnimationFrame(raf)
+    }
+
+    requestAnimationFrame(raf)
+
+    return () => {
+      lenis.destroy()
+      delete (window as any).lenis
+    }
+  }, [])
+
+  return <>{children}</>
+}
 ```
 
-### 2. Template
+**Wrap app trong `layout.tsx`:**
+
+```typescript
+import { LenisProvider } from '@/components/LenisProvider'
+
+export default function RootLayout({ children }) {
+  return (
+    <html lang="vi">
+      <body>
+        <LenisProvider>
+          {children}
+        </LenisProvider>
+      </body>
+    </html>
+  )
+}
+```
+
+### 2. Card Lock System
+
+**Quiz questions trong `TimelineSection.tsx`:**
+
+```typescript
+const quizQuestions = [
+  null, // Card 1 unlocked
+  {
+    question: 'Câu hỏi cho card 2',
+    options: [
+      { label: 'A', text: 'Đáp án A' },
+      { label: 'B', text: 'Đáp án B' },
+      { label: 'C', text: 'Đáp án C' },
+      { label: 'D', text: 'Đáp án D' },
+    ],
+    correctAnswer: 'A',
+  },
+  // ... thêm quiz cho card 3, 4, 5
+]
+
+// State management
+const [unlockedCards, setUnlockedCards] = useState([true, false, false, false, false])
+```
+
+**Locked card rendering:**
+
+```typescript
+{isLocked && (
+  <div className="absolute inset-0 backdrop-blur-md bg-white/20 rounded-3xl flex items-center justify-center z-10">
+    <div className="text-center">
+      <div className="text-6xl mb-4">🔒</div>
+      <p className="text-2xl font-heading font-bold">Nội dung bị khóa</p>
+      <p className="text-lg font-body">Nhấp để mở khóa</p>
+    </div>
+  </div>
+)}
+```
+
+### 3. Spotlight Effect on Hover
+
+**Mouse tracking:**
+
+```typescript
+const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
+
+const handleMouseMove = useCallback((e: React.MouseEvent, index: number) => {
+  if (!unlockedCards[index] && cardRefs.current[index]) {
+    const rect = cardRefs.current[index]!.getBoundingClientRect()
+    setMousePosition({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+    })
+  }
+}, [unlockedCards])
+```
+
+**Apply radial gradient:**
+
+```typescript
+<div
+  onMouseMove={(e) => handleMouseMove(e, index)}
+  style={
+    isLocked
+      ? {
+          background: `radial-gradient(circle 150px at ${mousePosition.x}px ${mousePosition.y}px, rgba(255,255,255,0.3), transparent)`,
+        }
+      : undefined
+  }
+>
+```
+
+### 4. Timeline Navigation Bar
+
+**Scroll tracking:**
+
+```typescript
+const [currentCardIndex, setCurrentCardIndex] = useState(0)
+const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+
+const handleScroll = useCallback(() => {
+  if (scrollTimeoutRef.current) return // Throttle
+  
+  scrollTimeoutRef.current = setTimeout(() => {
+    const scrollPosition = window.scrollY + window.innerHeight / 2
+    
+    for (let i = cardRefs.current.length - 1; i >= 0; i--) {
+      const card = cardRefs.current[i]
+      if (card) {
+        const rect = card.getBoundingClientRect()
+        const cardTop = window.scrollY + rect.top
+        const cardBottom = cardTop + rect.height
+        
+        if (scrollPosition >= cardTop && scrollPosition <= cardBottom) {
+          setCurrentCardIndex(i)
+          break
+        }
+      }
+    }
+    scrollTimeoutRef.current = null
+  }, 100) // Throttle 100ms
+}, [])
+```
+
+**Navigation with Lenis:**
+
+```typescript
+const handleNavigate = useCallback((index: number) => {
+  const card = cardRefs.current[index]
+  if (card) {
+    const lenis = (window as any).lenis as Lenis | undefined
+    
+    if (lenis) {
+      const offset = 100
+      const elementPosition = card.getBoundingClientRect().top + window.pageYOffset
+      const offsetPosition = elementPosition - offset
+      
+      lenis.scrollTo(offsetPosition, {
+        duration: 1.5,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      })
+    }
+  }
+}, [])
+```
+
+### 5. Performance Optimizations
+
+**Passive scroll listeners:**
+
+```typescript
+window.addEventListener('scroll', handleScroll, { passive: true })
+```
+
+**useCallback for handlers:**
+
+```typescript
+const handleTitleClick = useCallback((event, index) => {
+  // ...
+}, [unlockedCards])
+```
+
+**useMemo for computed values:**
+
+```typescript
+const prevEvent = useMemo(() => 
+  currentIndex > 0 ? events[currentIndex - 1] : null, 
+  [currentIndex, events]
+)
+```
+
+**Image optimization:**
+
+```typescript
+<Image
+  src="/images/photo.jpg"
+  width={192}
+  height={128}
+  loading="lazy"
+  quality={85}
+  alt="..."
+/>
+```
+
+**Scroll throttling:**
+
+```typescript
+let ticking = false
+
+const handleScroll = () => {
+  if (!ticking) {
+    window.requestAnimationFrame(() => {
+      // Do work
+      ticking = false
+    })
+    ticking = true
+  }
+}
+```
+
+### 6. Frosted Glass Effect (iOS-style)
+
+**CSS:**
+
+```css
+.bg-white/40 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/60
+```
+
+**Background pattern:**
+
+```typescript
+<div className="absolute inset-0 opacity-30">
+  <div className="absolute top-0 left-1/4 w-96 h-96 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full blur-3xl animate-pulse"></div>
+  <div className="absolute top-1/3 right-1/4 w-80 h-80 bg-gradient-to-br from-rose-400 to-pink-500 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+  <div className="absolute bottom-1/4 left-1/3 w-72 h-72 bg-gradient-to-br from-yellow-400 to-amber-500 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }}></div>
+</div>
+```
+
+## 📝 MDX Content Structure
+
+**File: `content/events/1954-1960.mdx`**
 
 ```mdx
 ---
-year: 1960
-title: Tên sự kiện
-city: Tên địa điểm
-summary: Mô tả ngắn gọn
+year: 1954
+yearRange: "1954 - 1960"
+title: Tiêu đề giai đoạn
+summary: Tóm tắt ngắn gọn
+videoUrl: https://www.youtube.com/watch?v=VIDEO_ID
 ---
 
-# Chi tiết sự kiện
+# Nội dung chi tiết
 
-Nội dung chi tiết bằng Markdown...
-
-## Phần con
+## Phần 1
 - Điểm 1
 - Điểm 2
+
+## Phần 2
+- Điểm 3
 ```
 
-### 3. Refresh browser → Tự động hiển thị!
-
-## 🎨 Tùy chỉnh
-
-### Đổi màu nền Hero
-
-File: `app/page.tsx` (hoặc `components/HeroSection.tsx`)
-
-```tsx
-<section className="... bg-[#f5ddcb]">
-//                         ^^^^^^^ Đổi màu này
-```
-
-### Đổi màu theme toàn bộ
-
-File: `styles/globals.css`
-
-```css
-:root {
-  --background: 28 56% 89%;     /* Màu nền chính */
-  --primary: 222.2 47.4% 11.2%; /* Màu chính */
-  --muted: 210 40% 96.1%;       /* Màu phụ */
-}
-```
-
-### Đổi fonts
-
-File: `styles/globals.css` (dòng 1)
-
-```css
-@import url('https://fonts.googleapis.com/css2?family=YourFont:wght@400;600&display=swap');
-```
-
-File: `tailwind.config.ts`
+**Load MDX trong `lib/getEvents.ts`:**
 
 ```typescript
-fontFamily: {
-  heading: ['"Your Heading Font"', 'serif'],
-  body: ['"Your Body Font"', 'serif'],
+import fs from 'fs'
+import path from 'path'
+import matter from 'gray-matter'
+
+export async function getEvents(): Promise<EventData[]> {
+  const eventsDir = path.join(process.cwd(), 'content', 'events')
+  const files = fs.readdirSync(eventsDir).filter(file => file.endsWith('.mdx'))
+  
+  const events = files.map(filename => {
+    const filePath = path.join(eventsDir, filename)
+    const fileContents = fs.readFileSync(filePath, 'utf8')
+    const { data, content } = matter(fileContents)
+    
+    return {
+      year: data.year || 0,
+      yearRange: data.yearRange || String(data.year),
+      title: data.title || '',
+      summary: data.summary || '',
+      videoUrl: data.videoUrl || '',
+      content: content || '',
+      slug: filename.replace('.mdx', ''),
+    }
+  })
+  
+  return events.sort((a, b) => a.year - b.year)
 }
 ```
 
-### Chỉnh hover effect
+## 🎨 Custom Animations
 
-File: `styles/globals.css`
+**CSS in `styles/globals.css`:**
 
 ```css
-.hero-image:hover {
-  transform: scale(1.3) rotate(0deg) !important;  /* Đổi 1.3 → 1.5 để zoom nhiều hơn */
-  opacity: 1 !important;
+/* Fade in animation for nav bar */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.5s ease-out;
+}
+
+/* Bounce animation for arrows */
+@keyframes bounce-slow {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(10px);
+  }
+}
+
+.animate-bounce-slow {
+  animation: bounce-slow 2s ease-in-out infinite;
 }
 ```
 
-### Thêm/Xóa ảnh trong Hero
+## ⚡ Performance Checklist
 
-File: `components/HeroSection.tsx`
-
-Copy/paste block `<Image>` và điều chỉnh:
-- `src="/images/your-image.jpg"`
-- `left-[%]` hoặc `right-[%]` - Vị trí ngang
-- `top-[%]` hoặc `bottom-[%]` - Vị trí dọc
-- `rotate-[Xdeg]` - Độ nghiêng
+- ✅ Passive scroll listeners
+- ✅ Scroll throttling (100ms)
+- ✅ useCallback for event handlers
+- ✅ useMemo for computed values
+- ✅ Image lazy loading
+- ✅ Optimized image sizes
+- ✅ RAF for smooth animations
+- ✅ CSS will-change hints
+- ✅ Lenis smooth scroll (no native scroll-behavior)
+- ✅ Removed unused components (EventCard)
 
 ## 🛠️ Commands
 
 ```bash
-npm run dev      # Development (đang chạy)
-npm run build    # Build production
-npm run start    # Run production
-npm run lint     # Check lỗi
-npm run format   # Format code
+npm run dev          # Development
+npm run build        # Production build
+npm run start        # Run production
+npm run lint         # Lint check
 ```
 
-## 📝 MDX Front-matter
+## 🎯 Quiz System
 
-**Required fields:**
-- `year` (number) - Năm
-- `title` (string) - Tiêu đề
-- `summary` (string) - Mô tả ngắn
+**Đáp án đúng:**
+- Card 2 (1961-1965): **A**
+- Card 3 (1965-1968): **B**  
+- Card 4 (1969-1973): **C**
+- Card 5 (1975): **D**
 
-**Optional:**
-- `city` (string) - Địa điểm
+**State không lưu** - Mỗi lần refresh phải trả lời lại
 
-**Không cần nữa** (đã xóa Map):
-- ~~`lat`, `lng`~~ - Tọa độ (không dùng)
-
-## 🎯 Đã xóa/Không có
-
-- ❌ Dark mode - Chỉ light mode
-- ❌ i18n - Chỉ tiếng Việt
-- ❌ Map/Leaflet - Chỉ Timeline
-- ❌ Header/Navigation - Không có nav
-- ❌ Middleware - Không cần routing
-
-## 🎨 Hero Images Layout
-
-### Vị trí các ảnh (10 ảnh):
-
-**Top (2):**
-- `Ho_chi_minh_trail.jpg` - Trái, rotate -12°
-- `images2260285_A2__1_.jpg` - Phải, rotate 6°
-
-**Bottom (2):**
-- `Redsvn-Ha-Noi-sau-1954-01.jpg` - Trái, rotate 11°
-- `dai-hoi-iii.jpg` - Phải, rotate -9°
-
-**Left (3):**
-- `1968.jpg` - Top 15%, rotate -18°
-- `60.jpg` - Top 40%, rotate -7°
-- `1972.jpg` - Bottom 15%, rotate 13°
-
-**Right (3):**
-- `60-2.jpg` - Top 15%, rotate 17°
-- `1975.png` - Top 40%, rotate 8°
-- `1990.jpg` - Bottom 15%, rotate -14°
-
-### Gap giữa ảnh top/bottom:
-- `gap-[140px]` - 140 pixels
-
-## 🔧 Components quan trọng
-
-### HeroSection.tsx
-- Client component (`'use client'`)
-- `useState` + `useEffect` cho scroll fade
-- 10 images absolute positioned
-- Text container: `max-w-4xl` (không full width)
-- Scroll listener: `window.scrollY` → opacity
-
-### TimelineSection.tsx
-- Client component
-- `react-vertical-timeline-component`
-- Load events từ `getEvents()`
-- Calendar icon từ lucide-react
-
-### getEvents.ts
-- Parse MDX front-matter
-- Fallback STUB_EVENTS nếu không có MDX
-- Return: `year, title, summary, city, slug`
-- **Không còn** `lat, lng`
-
-## 🎨 CSS Classes quan trọng
-
-### Fonts
-```tsx
-font-heading  // Playfair Display - cho h1-h6
-font-body     // Lora - cho paragraphs
-```
-
-### Hero Image
-```tsx
-hero-image    // Class cho tất cả 10 ảnh
-              // Hover → scale(1.3) + rotate(0deg)
-```
-
-## 🐛 Issues đã fix
-
-### ✅ "window is not defined"
-- **Đã fix**: Xóa Map/Leaflet (cần window object)
-- Giờ chỉ còn Timeline + Hero → Không lỗi SSR
-
-### ✅ Hover không work cho 60.jpg và 1975.png
-- **Nguyên nhân**: Text container full width block ảnh
-- **Fix**: Đổi `container` → `max-w-4xl mx-auto`
-
-### ✅ Scroll fade
-- **Làm mờ**: Ảnh (opacity giảm khi scroll)
-- **Giữ nguyên**: Text (z-10, không fade)
-
-## 💡 Next Steps / TODO
-
-### Nội dung
-- [ ] Thêm thêm sự kiện vào `content/events/`
-- [ ] Viết nội dung chi tiết cho MDX
-- [ ] Thêm ảnh cho timeline (nếu cần)
-
-### Styling
-- [ ] Fine-tune màu sắc theme
-- [ ] Điều chỉnh vị trí ảnh nếu cần
-- [ ] Responsive cho mobile (check layout ảnh)
-
-### Tính năng
-- [ ] SEO: Update `lib/seo.config.ts` với URL thật
-- [ ] Analytics (nếu cần)
-- [ ] 404 page custom (tạo `app/not-found.tsx`)
-
-### Deploy
-- [ ] Test build: `npm run build`
-- [ ] Deploy lên Vercel/Netlify
-- [ ] Update domain trong SEO config
-
-## 🚀 Deploy nhanh
+## 🚀 Deploy
 
 ### Vercel (Recommended)
+
 ```bash
-npm i -g vercel
-vercel login
 vercel --prod
 ```
 
-### Build local test
+### Manual Build
+
 ```bash
 npm run build
 npm run start
-# Test tại: http://localhost:3000
 ```
 
-## 📋 Troubleshooting
+## 📖 Customization Guide
 
-### Timeline không hiển thị?
-- Check MDX files có đúng format không
-- Verify front-matter có `---` đầu/cuối
-- Console log: Check stub data
+### Thay đổi quiz questions
 
-### Ảnh không load?
-- Verify path: `public/images/filename.jpg`
-- Check Next.js console
-- Hard refresh: Ctrl+Shift+R
+Edit `components/TimelineSection.tsx`:
 
-### Build error?
-```bash
-rm -rf .next
-npm run build
+```typescript
+const quizQuestions = [
+  null,
+  {
+    question: 'Câu hỏi mới',
+    options: [/* ... */],
+    correctAnswer: 'A',
+  },
+  // ...
+]
 ```
 
-## 🎯 Current State (2025-11-03)
+### Thêm/xóa cards
 
-✅ **Hoàn tất:**
-- Hero section full screen với 10 ảnh
-- Timeline với 3 sự kiện mẫu
-- Hover effects working
-- Scroll fade working
-- Typography (Playfair Display + Lora)
-- No dark mode, no i18n, no map
-- No header/nav
+1. Thêm file MDX trong `content/events/`
+2. Update `unlockedCards` state (thêm `false` cho locked)
+3. Thêm quiz vào `quizQuestions`
 
-✅ **Sẵn sàng:**
-- Thêm nội dung mới
-- Deploy production
-- Tùy chỉnh styling
+### Đổi theme colors
 
-## 📖 Quick Reference
+Edit `styles/globals.css`:
 
-| Cần làm gì | File cần sửa |
-|------------|--------------|
-| Thêm sự kiện | `content/events/[year].mdx` |
-| Đổi màu nền Hero | `components/HeroSection.tsx` → `bg-[#...]` |
-| Đổi theme colors | `styles/globals.css` → CSS variables |
-| Thêm/xóa ảnh Hero | `components/HeroSection.tsx` |
-| Chỉnh hover effect | `styles/globals.css` → `.hero-image:hover` |
-| Đổi fonts | `styles/globals.css` + `tailwind.config.ts` |
-| SEO | `lib/seo.config.ts` |
-
-## 🎨 Typography
-
-**Auto-apply:**
-- Tất cả `h1-h6` → Playfair Display
-- Body text → Lora
-
-**Manual:**
-```tsx
-<h1 className="font-heading">Title</h1>
-<p className="font-body">Content</p>
-```
-
-## 📦 Dependencies chính
-
-```json
-{
-  "next": "^15.0.0",
-  "react": "^18.3.0",
-  "react-vertical-timeline-component": "^3.6.0",
-  "gray-matter": "^4.0.3",
-  "lucide-react": "^0.552.0",
-  "tailwindcss": "^3.4.1"
+```css
+:root {
+  --background: 28 56% 89%;
+  --primary: 222.2 47.4% 11.2%;
 }
 ```
 
-**Đã xóa** (không cần nữa):
-- ~~react-leaflet, leaflet~~ (Map)
-- ~~next-intl~~ (i18n)
+### Customize smooth scroll
 
-## 🔍 Debug Tips
+Edit `components/LenisProvider.tsx`:
 
-### Check hover effect
-1. F12 → Elements
-2. Hover vào ảnh
-3. Xem class `.hero-image` có apply không
-4. Check computed styles
+```typescript
+const lenis = new Lenis({
+  duration: 1.5,        // Slower
+  wheelMultiplier: 0.5, // Less sensitive
+  // ...
+})
+```
 
-### Check scroll fade
-1. Console.log trong `handleScroll`
-2. Verify `scrollOpacity` state changes
-3. Check browser console
+## 🐛 Troubleshooting
 
-### CSS not working?
-- Hard refresh: Ctrl+Shift+R
-- Clear `.next`: `rm -rf .next && npm run dev`
-- Check Tailwind classes compile
+### Smooth scroll không hoạt động?
+- Check Lenis có được initialize không
+- Verify `window.lenis` exists
+- Check browser console for errors
 
-## ⚠️ Known Issues
+### Cards không unlock sau quiz?
+- Check `correctAnswer` khớp với option label
+- Verify state update trong `handleQuizCorrect`
 
-### Hover không work cho 1 số ảnh?
-- **Nguyên nhân**: Text container full width block pointer events
-- **Fix**: Text container dùng `max-w-4xl` thay vì `container`
+### Navigation bar bị lệch?
+- Container: `flex flex-col items-center`
+- Progress: Không cần `justify-center`
 
-### Ảnh bị crop?
-- Dùng `object-cover` → Crop theo khung
-- Đổi thành `object-contain` để hiện full ảnh
-
-## 🌟 Features có thể thêm
-
-- [ ] Click ảnh → Modal full size
-- [ ] Filter timeline theo năm
-- [ ] Search events
-- [ ] Share buttons
-- [ ] Print timeline
-- [ ] Export PDF
+### Performance issues?
+- Check scroll listeners có `passive: true`
+- Verify throttling works (100ms timeout)
+- Check image lazy loading
 
 ## 📜 License
 
@@ -438,6 +556,14 @@ MIT
 
 ---
 
-**Last updated:** 2025-11-03  
-**Status:** Ready for content & deployment  
-**Developer notes:** Hero images hover + scroll fade working, no header/nav, single page timeline only
+**Version:** 2.0.0  
+**Last Updated:** 2025-11-05  
+**Status:** Production Ready
+
+**Key Features:**
+- ✅ Lenis smooth scroll
+- ✅ Quiz unlock system
+- ✅ Timeline navigation bar
+- ✅ Frosted glass effects
+- ✅ Performance optimized
+- ✅ Mobile responsive

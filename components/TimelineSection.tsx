@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useCallback, useMemo } from 'react'
 import { EventData } from '@/lib/getEvents'
 import { VideoModal } from './VideoModal'
 import { QuizModal } from './QuizModal'
@@ -66,10 +66,15 @@ export function TimelineSection({ events }: TimelineSectionProps) {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
   const [currentCardIndex, setCurrentCardIndex] = useState(0)
   const cardRefs = useRef<(HTMLDivElement | null)[]>([])
+  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
-  // Track which card is currently in view
-  useEffect(() => {
-    const handleScroll = () => {
+  // Track which card is currently in view with throttling
+  const handleScroll = useCallback(() => {
+    if (scrollTimeoutRef.current) {
+      return // Skip if already processing
+    }
+
+    scrollTimeoutRef.current = setTimeout(() => {
       const scrollPosition = window.scrollY + window.innerHeight / 2
 
       for (let i = cardRefs.current.length - 1; i >= 0; i--) {
@@ -85,15 +90,23 @@ export function TimelineSection({ events }: TimelineSectionProps) {
           }
         }
       }
-    }
-
-    window.addEventListener('scroll', handleScroll)
-    handleScroll() // Check initial state
-
-    return () => window.removeEventListener('scroll', handleScroll)
+      scrollTimeoutRef.current = null
+    }, 100) // Throttle to every 100ms
   }, [])
 
-  const handleNavigate = (index: number) => {
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    handleScroll() // Check initial state
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current)
+      }
+    }
+  }, [handleScroll])
+
+  const handleNavigate = useCallback((index: number) => {
     const card = cardRefs.current[index]
     if (card) {
       // Get Lenis instance from window
@@ -114,31 +127,31 @@ export function TimelineSection({ events }: TimelineSectionProps) {
         card.scrollIntoView({ behavior: 'smooth', block: 'center' })
       }
     }
-  }
+  }, [])
 
-  const handleTitleClick = (event: EventData, index: number) => {
+  const handleTitleClick = useCallback((event: EventData, index: number) => {
     if (unlockedCards[index]) {
       setSelectedEvent(event)
       setModalOpen(true)
     }
-  }
+  }, [unlockedCards])
 
-  const handleCardClick = (index: number) => {
+  const handleCardClick = useCallback((index: number) => {
     if (!unlockedCards[index] && quizQuestions[index]) {
       setCurrentQuizIndex(index)
       setQuizModalOpen(true)
     }
-  }
+  }, [unlockedCards])
 
-  const handleQuizCorrect = () => {
+  const handleQuizCorrect = useCallback(() => {
     if (currentQuizIndex !== null) {
       const newUnlockedCards = [...unlockedCards]
       newUnlockedCards[currentQuizIndex] = true
       setUnlockedCards(newUnlockedCards)
     }
-  }
+  }, [currentQuizIndex, unlockedCards])
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>, index: number) => {
+  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>, index: number) => {
     if (!unlockedCards[index] && cardRefs.current[index]) {
       const rect = cardRefs.current[index]!.getBoundingClientRect()
       setMousePosition({
@@ -146,7 +159,7 @@ export function TimelineSection({ events }: TimelineSectionProps) {
         y: e.clientY - rect.top,
       })
     }
-  }
+  }, [unlockedCards])
 
   return (
     <section className="relative bg-[#f5ddcb] py-20 overflow-hidden">

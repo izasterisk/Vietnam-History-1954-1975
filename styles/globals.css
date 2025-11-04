@@ -38,7 +38,7 @@
     @apply bg-background text-foreground font-body;
   }
   html {
-    scroll-behavior: smooth;
+    scroll-behavior: auto; /* Let Lenis handle smooth scrolling */
   }
   
   /* Apply Playfair Display to all headings */
@@ -52,22 +52,22 @@
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Hover effect for hero images */
+/* Hover effect for hero images - optimized */
 .hero-image {
-  transition: all 0.5s ease !important;
-  will-change: transform, opacity;
+  transition: transform 0.5s ease, opacity 0.5s ease;
+  will-change: transform;
 }
 
 .hero-image:hover {
-  transform: scale(1.3) rotate(0deg) !important;
-  z-index: 20 !important;
-  opacity: 1 !important;
+  transform: scale(1.3) rotate(0deg);
+  z-index: 20;
+  opacity: 1;
 }
 
-/* Timeline hover effects */
+/* Timeline hover effects - optimized */
 .timeline-title {
-  transition: all 0.3s ease;
-  will-change: transform, color;
+  transition: transform 0.3s ease, color 0.3s ease;
+  will-change: transform;
 }
 
 .timeline-title:hover {
