@@ -65,8 +65,10 @@ export function TimelineSection({ events }: TimelineSectionProps) {
   const [unlockedCards, setUnlockedCards] = useState<boolean[]>([true, false, false, false, false])
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
   const [currentCardIndex, setCurrentCardIndex] = useState(0)
+  const [playingAudioIndex, setPlayingAudioIndex] = useState<number | null>(null)
   const cardRefs = useRef<(HTMLDivElement | null)[]>([])
   const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const audioRef = useRef<HTMLAudioElement | null>(null)
 
   // Track which card is currently in view with throttling
   const handleScroll = useCallback(() => {
@@ -105,6 +107,51 @@ export function TimelineSection({ events }: TimelineSectionProps) {
       }
     }
   }, [handleScroll])
+
+  // Stop audio when scrolling to different card
+  useEffect(() => {
+    if (playingAudioIndex !== null && playingAudioIndex !== currentCardIndex) {
+      stopAudio()
+    }
+  }, [currentCardIndex, playingAudioIndex])
+
+  const stopAudio = useCallback(() => {
+    if (audioRef.current) {
+      audioRef.current.pause()
+      audioRef.current.currentTime = 0
+    }
+    setPlayingAudioIndex(null)
+  }, [])
+
+  const handleYearClick = useCallback((event: EventData, index: number) => {
+    if (!unlockedCards[index]) return
+
+    // Stop current audio if playing
+    if (playingAudioIndex === index) {
+      stopAudio()
+      return
+    }
+
+    // Stop any currently playing audio
+    stopAudio()
+
+    // Play new audio
+    if (event.audioUrl) {
+      const audio = new Audio(event.audioUrl)
+      audioRef.current = audio
+      setPlayingAudioIndex(index)
+      
+      audio.play().catch((error) => {
+        console.error('Error playing audio:', error)
+        setPlayingAudioIndex(null)
+      })
+
+      // Reset when audio ends
+      audio.onended = () => {
+        setPlayingAudioIndex(null)
+      }
+    }
+  }, [unlockedCards, playingAudioIndex, stopAudio])
 
   const handleNavigate = useCallback((index: number) => {
     const card = cardRefs.current[index]
@@ -211,10 +258,25 @@ export function TimelineSection({ events }: TimelineSectionProps) {
                   {index + 1}
                 </div>
 
-                {/* Year with decorative line */}
+                {/* Year with decorative line - clickable with hover effects */}
                 <div className="mb-6">
-                  <div className={`text-6xl font-heading font-bold mb-3 ${isLocked ? 'text-gray-400 blur-sm' : 'text-gray-900'}`}>
+                  <div 
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      handleYearClick(event, index)
+                    }}
+                    className={`text-6xl font-heading font-bold mb-3 transition-all duration-300 ${
+                      isLocked 
+                        ? 'text-gray-400 blur-sm cursor-default' 
+                        : `text-gray-900 cursor-pointer hover:text-blue-600 hover:-translate-y-2 ${
+                            playingAudioIndex === index ? 'text-blue-600 animate-pulse' : ''
+                          }`
+                    }`}
+                  >
                     {event.yearRange}
+                    {playingAudioIndex === index && !isLocked && (
+                      <span className="ml-3 text-3xl">🔊</span>
+                    )}
                   </div>
                   <div className="h-1 w-24 bg-gradient-to-r from-gray-900 to-transparent rounded-full" />
                 </div>

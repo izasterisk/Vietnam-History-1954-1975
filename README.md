@@ -33,6 +33,10 @@ npm run dev
 - **Spotlight Effect**: Đốm sáng theo chuột khi hover locked cards
 - **Quiz Modal**: Trắc nghiệm mở khóa nội dung
 - **Video Modal**: Click tiêu đề xem video YouTube
+- **Audio Narration**: Click vào năm (year) để nghe thuyết minh
+  - Auto stop khi scroll đến card khác
+  - Visual indicator (🔊) khi đang phát
+  - Hover effect: màu xanh + translateY
 
 ### 3. Timeline Navigation Bar
 - Fixed bottom navigation với frosted glass
@@ -46,6 +50,13 @@ npm run dev
 - **Lenis library**: Smooth scroll toàn trang
 - Easing tự nhiên, không teleport
 - Passive event listeners cho performance
+
+### 5. Audio Narration System
+- **Click vào năm**: Phát audio thuyết minh
+- **Auto-stop**: Dừng audio khi scroll đến card khác
+- **Visual feedback**: Icon 🔊 và màu xanh khi đang phát
+- **Hover effect**: translateY + color change giống title
+- **Toggle**: Click lại để dừng audio
 
 ## 📁 Cấu trúc Project
 
@@ -328,7 +339,91 @@ const handleScroll = () => {
 }
 ```
 
-### 6. Frosted Glass Effect (iOS-style)
+### 6. Audio Narration System
+
+**State management:**
+
+```typescript
+const [playingAudioIndex, setPlayingAudioIndex] = useState<number | null>(null)
+const audioRef = useRef<HTMLAudioElement | null>(null)
+```
+
+**Audio player handler:**
+
+```typescript
+const stopAudio = useCallback(() => {
+  if (audioRef.current) {
+    audioRef.current.pause()
+    audioRef.current.currentTime = 0
+  }
+  setPlayingAudioIndex(null)
+}, [])
+
+const handleYearClick = useCallback((event: EventData, index: number) => {
+  if (!unlockedCards[index]) return
+
+  // Toggle: stop if already playing
+  if (playingAudioIndex === index) {
+    stopAudio()
+    return
+  }
+
+  // Stop any current audio
+  stopAudio()
+
+  // Play new audio
+  if (event.audioUrl) {
+    const audio = new Audio(event.audioUrl)
+    audioRef.current = audio
+    setPlayingAudioIndex(index)
+    
+    audio.play().catch((error) => {
+      console.error('Error playing audio:', error)
+      setPlayingAudioIndex(null)
+    })
+
+    audio.onended = () => {
+      setPlayingAudioIndex(null)
+    }
+  }
+}, [unlockedCards, playingAudioIndex, stopAudio])
+```
+
+**Auto-stop when scrolling:**
+
+```typescript
+// Stop audio when scrolling to different card
+useEffect(() => {
+  if (playingAudioIndex !== null && playingAudioIndex !== currentCardIndex) {
+    stopAudio()
+  }
+}, [currentCardIndex, playingAudioIndex])
+```
+
+**Year with click handler and visual feedback:**
+
+```typescript
+<div 
+  onClick={(e) => {
+    e.stopPropagation()
+    handleYearClick(event, index)
+  }}
+  className={`text-6xl font-heading font-bold mb-3 transition-all duration-300 ${
+    isLocked 
+      ? 'text-gray-400 blur-sm cursor-default' 
+      : `text-gray-900 cursor-pointer hover:text-blue-600 hover:-translate-y-2 ${
+          playingAudioIndex === index ? 'text-blue-600 animate-pulse' : ''
+        }`
+  }`}
+>
+  {event.yearRange}
+  {playingAudioIndex === index && !isLocked && (
+    <span className="ml-3 text-3xl">🔊</span>
+  )}
+</div>
+```
+
+### 7. Frosted Glass Effect (iOS-style)
 
 **CSS:**
 
@@ -357,6 +452,7 @@ yearRange: "1954 - 1960"
 title: Tiêu đề giai đoạn
 summary: Tóm tắt ngắn gọn
 videoUrl: https://www.youtube.com/watch?v=VIDEO_ID
+audioUrl: /audios/1954-1960-narration.wav
 ---
 
 # Nội dung chi tiết
@@ -391,6 +487,7 @@ export async function getEvents(): Promise<EventData[]> {
       title: data.title || '',
       summary: data.summary || '',
       videoUrl: data.videoUrl || '',
+      audioUrl: data.audioUrl || '',
       content: content || '',
       slug: filename.replace('.mdx', ''),
     }
