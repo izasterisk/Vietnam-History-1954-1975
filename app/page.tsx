@@ -24,6 +24,11 @@ export default async function HomePage() {
           <div className="flex-1 h-px bg-gray-800" />
         </div>
         
+        {/* Second instruction line */}
+        <div className="text-center text-gray-900 font-body text-xl mt-4">
+          Nhấp vào năm để mở audio lồng tiếng
+        </div>
+        
         {/* Animated arrows pointing down */}
         <div className="flex justify-center gap-2 mt-6">
           <div className="animate-bounce-slow text-3xl text-gray-800">↓</div>

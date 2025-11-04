@@ -23,6 +23,18 @@ export function HeroSection() {
 
   return (
     <section className="min-h-screen flex items-center justify-center bg-[#f5ddcb] relative overflow-hidden">
+      {/* Ambient Background Overlay */}
+      <div 
+        className="absolute inset-0 pointer-events-none"
+        style={{ background: 'radial-gradient(#f5ddcb 60%, #e5c9b1)' }}
+      />
+
+      {/* Vignette Effect */}
+      <div 
+        className="absolute inset-0 pointer-events-none"
+        style={{ background: 'radial-gradient(circle at center, transparent 70%, rgba(0,0,0,0.2))' }}
+      />
+
       {/* Background Images - Arc Layout with scroll fade */}
       <div 
         className="absolute inset-0 pointer-events-none transition-opacity duration-300"
