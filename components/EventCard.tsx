@@ -18,7 +18,7 @@ export function EventCard({ event }: EventCardProps) {
       <CardHeader>
         <CardTitle className="font-heading">{event.title}</CardTitle>
         <CardDescription className="font-body">
-          {event.year} {event.city && `• ${event.city}`}
+          {event.year}
         </CardDescription>
       </CardHeader>
       <CardContent>
