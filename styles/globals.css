@@ -134,6 +134,22 @@
   animation: fade-in 0.5s ease-out;
 }
 
+/* Slide in from right animation for image modal */
+@keyframes slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(100px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-slide-in-right {
+  animation: slide-in-right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
 /* Markdown content styles */
 .markdown-content h1 {
   @apply text-3xl font-heading font-bold mt-6 mb-4;
